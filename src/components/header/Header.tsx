@@ -1,5 +1,5 @@
-import styles from "./Header.module.scss";
-import cookchef from "../assets/images/cookchef.png";
+import styles from "../header/Header.module.scss";
+import cookchef from "../../assets/images/cookchef.png";
 
 export default function Header() {
   return (
