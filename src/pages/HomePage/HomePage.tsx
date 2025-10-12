@@ -1,5 +1,5 @@
-import styles from "./Content.module.scss";
-import Recipe from "../recipe/Recipe";
+import styles from "./HomePage.module.scss";
+import Recipe from "./components/Recipe";
 import { data } from "../../data/recipies";
 import type { Recipe as RecipeType } from "../../data/recipies";
 import { useState } from "react";
