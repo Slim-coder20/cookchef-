@@ -1,22 +1,17 @@
 import styles from "./Recipe.module.scss";
 import { useState } from "react";
 
-type Props = {
-  title: string;
-  image: string;
-};
+export default function Recipe({ title, image }) {
+  // State : ce state va nous permettre de mémoriser le liked sur une recette //
+  const [liked, setLiked] = useState(false);
 
-export default function Recipe({ title, image }: Props) {
-  // State : ce state va nous permettre de mémoriser le liked sur une recette // 
-  const [liked, setLiked ] = useState(false)
-
-  // Function : cette fonction va nous permettre de déclencher le liked sur les recettes // 
-  function handleClick () {
-   setLiked(!liked); 
+  // Function : cette fonction va nous permettre de déclencher le liked sur les recettes //
+  function handleClick() {
+    setLiked(!liked);
   }
 
   return (
-    <div onClick={ handleClick} className={styles.recipe}>
+    <div onClick={handleClick} className={styles.recipe}>
       <div className={styles.imageContainer}>
         <img src={image} alt="recipe" />
       </div>
