@@ -4,7 +4,6 @@ import { useState, useEffect, useContext } from "react";
 import Loading from "../../components/loading/Loading";
 import { ApiContext } from "../../context/ApiContext";
 
-
 export function HomePage() {
   const [recipes, setRecipes] = useState([]);
   // Ce state va nous permettre de mémoriser
@@ -44,6 +43,13 @@ export function HomePage() {
     setFilter(filter.trim().toLowerCase());
   }
 
+  // Function :
+  function updateRecipe(updatedRecipe) {
+    setRecipes(
+      recipe.map((r) => (r._id === updatedRecipe._id ? updatedRecipe : r))
+    );
+  }
+
   return (
     <div className="flex-fill container p-20 d-flex flex-column ">
       <h1 className=" my-30">Découvrez nos nouvelles recettes </h1>
@@ -69,7 +75,11 @@ export function HomePage() {
             {recipes
               .filter((r) => r.title.toLowerCase().startsWith(filter))
               .map((r) => (
-                <Recipe title={r.title} image={r.image} />
+                <Recipe
+                  key={r._id}
+                  recipe={r}
+                  toggleLikedRecipe={updateRecipe}
+                />
               ))}
           </div>
         )}
