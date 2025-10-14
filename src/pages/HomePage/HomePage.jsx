@@ -14,16 +14,24 @@ export function HomePage() {
   // Context //
   const BASE_URL_API = useContext(ApiContext);
 
+  const [page, setPage] = useState(1);
+
   // UseEffect : On utilise le fetch pour récupérer les données depuis l'apirest pour affichage des recettes //
   useEffect(() => {
     let cancel = false;
     async function fetchRecipes() {
       try {
         setIsLoading(true);
-        const response = await fetch(BASE_URL_API);
+        const response = await fetch(
+          `${BASE_URL_API}?skip=${(page - 1) * 18}&limit=18`
+        );
         if (response.ok && !cancel) {
-          const recipes = await response.json();
-          setRecipes(Array.isArray(recipes) ? recipes : [recipes]);
+          const newRecipes = await response.json();
+          setRecipes((x) =>
+            Array.isArray(newRecipes)
+              ? [...x, ...newRecipes]
+              : [...x, newRecipes]
+          );
         }
       } catch (error) {
         console.log("erreur");
@@ -35,7 +43,7 @@ export function HomePage() {
     }
     fetchRecipes();
     return () => (cancel = true);
-  }, [BASE_URL_API]);
+  }, [BASE_URL_API, page]);
 
   // Function : cette fonction va nous permettre de filtrer la recherche des recettes //
   function handleInput(e) {
@@ -52,7 +60,10 @@ export function HomePage() {
 
   return (
     <div className="flex-fill container p-20 d-flex flex-column ">
-      <h1 className=" my-30">Découvrez nos nouvelles recettes </h1>
+      <h1 className=" my-30">
+        Découvrez nos nouvelles recettes{" "}
+        <small className={styles.small}> - {recipes.length}</small>
+      </h1>
       <div
         className={`card d-flex flex-fill flex-column mb-20 p-20 ${styles.contentCard} `}
       >
@@ -68,7 +79,7 @@ export function HomePage() {
             placeholder="rechercher"
           />
         </div>
-        {isLoading ? (
+        {isLoading && !recipes.length ? (
           <Loading />
         ) : (
           <div className={styles.grid}>
@@ -83,6 +94,14 @@ export function HomePage() {
               ))}
           </div>
         )}
+        <div className="d-flex flex-row justify-content-center align-items-center p-20">
+          <button
+            onClick={() => setPage(page + 1)}
+            className=" btn btn-primary"
+          >
+            Charger plus de recettes
+          </button>
+        </div>
       </div>
     </div>
   );
