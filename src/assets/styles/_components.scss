@@ -28,3 +28,23 @@
 .text-primary {
   color: var(--primary);
 }
+
+label {
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 3px;
+}
+
+input {
+  padding: 10px 15px;
+  border: 2px solid var(--graylight);
+  border-radius: 15px;
+}
+
+.form-error {
+  margin: 0;
+  color: var(--danger);
+  font-weight: 500;
+  font-size: 12px;
+  margin-bottom: 10px;
+}
