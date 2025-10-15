@@ -1,8 +1,9 @@
 import styles from "./HomePage.module.scss";
-import Recipe from "./components/Recipe";
+import Recipe from "./components/recipe/Recipe";
 import { useState, useEffect, useContext } from "react";
 import Loading from "../../components/loading/Loading";
 import { ApiContext } from "../../context/ApiContext";
+import Search from "./components/search/Search";
 
 export function HomePage() {
   const [recipes, setRecipes] = useState([]);
@@ -45,12 +46,6 @@ export function HomePage() {
     return () => (cancel = true);
   }, [BASE_URL_API, page]);
 
-  // Function : cette fonction va nous permettre de filtrer la recherche des recettes //
-  function handleInput(e) {
-    const filter = e.target.value;
-    setFilter(filter.trim().toLowerCase());
-  }
-
   // Function :
   function updateRecipe(updatedRecipe) {
     setRecipes(
@@ -67,18 +62,7 @@ export function HomePage() {
       <div
         className={`card d-flex flex-fill flex-column mb-20 p-20 ${styles.contentCard} `}
       >
-        {/* Barre de recherche  */}
-        <div
-          className={`d-flex flex-row justify-content-center align-items-center my-30 ${styles.searchBar}`}
-        >
-          <i className="fa-solid fa-magnifying-glass mr-15"></i>
-          <input
-            onInput={handleInput}
-            className=" flex-fill"
-            type="text"
-            placeholder="rechercher"
-          />
-        </div>
+        <Search setFilter={setFilter} />
         {isLoading && !recipes.length ? (
           <Loading />
         ) : (
