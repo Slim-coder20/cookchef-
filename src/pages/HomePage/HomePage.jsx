@@ -4,71 +4,65 @@ import { useState, useEffect, useContext } from "react";
 import Loading from "../../components/loading/Loading";
 import { ApiContext } from "../../context/ApiContext";
 import Search from "./components/search/Search";
+import useFetchData from "../../hooks/useFetchData";
 
+/**
+ * Composant principal de la page d'accueil affichant la liste des recettes
+ * @returns {JSX.Element} Le composant HomePage
+ */
 export function HomePage() {
-  const [recipes, setRecipes] = useState([]);
-  // Ce state va nous permettre de mémoriser
+  // État pour gérer le filtre de recherche des recettes
   const [filter, setFilter] = useState("");
-  // Loading
-  const [isLoading, setIsLoading] = useState(true);
 
-  // Context //
-  const BASE_URL_API = useContext(ApiContext);
-
+  // État pour gérer la pagination des recettes
   const [page, setPage] = useState(1);
 
-  // UseEffect : On utilise le fetch pour récupérer les données depuis l'apirest pour affichage des recettes //
-  useEffect(() => {
-    let cancel = false;
-    async function fetchRecipes() {
-      try {
-        setIsLoading(true);
-        const response = await fetch(
-          `${BASE_URL_API}?skip=${(page - 1) * 18}&limit=18`
-        );
-        if (response.ok && !cancel) {
-          const newRecipes = await response.json();
-          setRecipes((x) =>
-            Array.isArray(newRecipes)
-              ? [...x, ...newRecipes]
-              : [...x, newRecipes]
-          );
-        }
-      } catch (error) {
-        console.log("erreur");
-      } finally {
-        if (!cancel) {
-          setIsLoading(false);
-        }
-      }
-    }
-    fetchRecipes();
-    return () => (cancel = true);
-  }, [BASE_URL_API, page]);
+  // Récupération de l'URL de base de l'API depuis le contexte
+  const BASE_URL_API = useContext(ApiContext);
 
-  // Function :
+  // Utilisation du hook personnalisé pour récupérer les données des recettes
+  // Le hook retourne les données, l'état de chargement et les erreurs
+  const [[recipes, setRecipes], isLoading, error] = useFetchData(
+    BASE_URL_API,
+    page
+  );
+
+  /**
+   * Fonction pour mettre à jour une recette spécifique dans la liste
+   * @param {Object} updatedRecipe - La recette mise à jour avec ses nouvelles données
+   */
   function updateRecipe(updatedRecipe) {
     setRecipes(
-      recipe.map((r) => (r._id === updatedRecipe._id ? updatedRecipe : r))
+      recipes.map((r) => (r._id === updatedRecipe._id ? updatedRecipe : r))
     );
   }
 
   return (
     <div className="flex-fill container p-20 d-flex flex-column ">
+      {/* En-tête avec le titre et le nombre total de recettes */}
       <h1 className=" my-30">
         Découvrez nos nouvelles recettes{" "}
         <small className={styles.small}> - {recipes.length}</small>
       </h1>
+
+      {/* Conteneur principal avec la barre de recherche et la liste des recettes */}
       <div
         className={`card d-flex flex-fill flex-column mb-20 p-20 ${styles.contentCard} `}
       >
+        {/* Composant de recherche permettant de filtrer les recettes */}
         <Search setFilter={setFilter} />
+
+        {/* Affichage conditionnel : loading initial ou liste des recettes */}
         {isLoading && !recipes.length ? (
+          // Affiche le composant de chargement uniquement lors du premier chargement
           <Loading />
         ) : (
+          // Grille des recettes avec filtrage par titre
           <div className={styles.grid}>
             {recipes
+              // Filtrage des recettes selon le critère de recherche (débute par le filtre tapé)
               .filter((r) => r.title.toLowerCase().startsWith(filter))
+              // Rendu de chaque recette dans le composant Recipe
               .map((r) => (
                 <Recipe
                   key={r._id}
@@ -78,6 +72,8 @@ export function HomePage() {
               ))}
           </div>
         )}
+
+        {/* Bouton pour charger plus de recettes (pagination) */}
         <div className="d-flex flex-row justify-content-center align-items-center p-20">
           <button
             onClick={() => setPage(page + 1)}
