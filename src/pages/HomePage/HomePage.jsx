@@ -37,6 +37,14 @@ export function HomePage() {
     );
   }
 
+  /**
+   * Fonction pour supprimer des recettes spécifique dans la liste
+   *
+   */
+  function deleteRecipe(_id) {
+    setRecipes(recipes.filter((r) => r._id !== _id));
+  }
+
   return (
     <div className="flex-fill container p-20 d-flex flex-column ">
       {/* En-tête avec le titre et le nombre total de recettes */}
@@ -68,6 +76,7 @@ export function HomePage() {
                   key={r._id}
                   recipe={r}
                   toggleLikedRecipe={updateRecipe}
+                  deleteRecipe={deleteRecipe}
                 />
               ))}
           </div>
