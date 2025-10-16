@@ -39,6 +39,7 @@ export default function useFetchData(url, page) {
           // Calcul du nombre d'éléments à ignorer (skip) et limite par page
           queryParam.append("skip", (page - 1) * 18);
           queryParam.append("limit", 18);
+          queryParam.append('sort', 'createAt:-1')
         }
 
         // Appel à l'API avec les paramètres de pagination
