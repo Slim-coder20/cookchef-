@@ -31,18 +31,52 @@ function HomePage() {
    * Fonction pour mettre à jour une recette spécifique dans la liste
    * @param {Object} updatedRecipe - La recette mise à jour avec ses nouvelles données
    */
-  function updateRecipe(updatedRecipe) {
-    setRecipes(
-      recipes.map((r) => (r._id === updatedRecipe._id ? updatedRecipe : r))
-    );
+  async function updateRecipe(updatedRecipe) {
+    try {
+      // Envoie une requête PATCH pour inverser l'état "liked"
+      const { _id, ...restRecipe } = updatedRecipe;
+      const response = await fetch(`${BASE_URL_API}/${_id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(restRecipe),
+      });
+
+      // Si la requête s'est bien passée
+      if (response.ok) {
+        const updatedFromApi = await response.json();
+        // Met à jour l'état local
+        setRecipes(
+          recipes.map((r) =>
+            r._id === updatedFromApi._id ? updatedFromApi : r
+          )
+        );
+      }
+    } catch (e) {
+      console.log("Erreur");
+    }
   }
 
   /**
    * Fonction pour supprimer des recettes spécifique dans la liste
    *
    */
-  function deleteRecipe(_id) {
-    setRecipes(recipes.filter((r) => r._id !== _id));
+  async function deleteRecipe(_id) {
+    try {
+      // Envoie une requête DELETE pour supprimer la recette
+      const response = await fetch(`${BASE_URL_API}/${_id}`, {
+        method: "DELETE",
+      });
+
+      // Si la suppression s'est bien passée
+      if (response.ok) {
+        // Met à jour l'état local en supprimant la recette
+        setRecipes(recipes.filter((r) => r._id !== _id));
+      }
+    } catch (e) {
+      console.log("Erreur");
+    }
   }
 
   return (
@@ -75,7 +109,7 @@ function HomePage() {
                 <Recipe
                   key={r._id}
                   recipe={r}
-                  toggleLikedRecipe={updateRecipe}
+                  updatedRecipe={updateRecipe}
                   deleteRecipe={deleteRecipe}
                 />
               ))}
