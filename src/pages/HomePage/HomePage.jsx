@@ -10,7 +10,7 @@ import useFetchData from "../../hooks/useFetchData";
  * Composant principal de la page d'accueil affichant la liste des recettes
  * @returns {JSX.Element} Le composant HomePage
  */
-export function HomePage() {
+function HomePage() {
   // État pour gérer le filtre de recherche des recettes
   const [filter, setFilter] = useState("");
 
@@ -95,3 +95,4 @@ export function HomePage() {
     </div>
   );
 }
+export default HomePage;
