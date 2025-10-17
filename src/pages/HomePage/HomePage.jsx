@@ -4,7 +4,7 @@ import { useState, useEffect, useContext } from "react";
 import Loading from "../../components/loading/Loading";
 import { ApiContext } from "../../context/ApiContext";
 import Search from "./components/search/Search";
-import useFetchData from "../../hooks/useFetchData";
+import useFetchRecipes from "../../hooks/useFetchRecipes";
 
 /**
  * Composant principal de la page d'accueil - Container Component
@@ -24,10 +24,7 @@ function HomePage() {
 
   // Utilisation du hook personnalisé pour récupérer les données des recettes
   // Le hook retourne les données, l'état de chargement et les erreurs
-  const [[recipes, setRecipes], isLoading, error] = useFetchData(
-    BASE_URL_API,
-    page
-  );
+  const [[recipes, setRecipes], isLoading, error] = useFetchRecipes(page);
 
   /**
    * Gère la mise à jour d'une recette via API PATCH
