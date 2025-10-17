@@ -7,7 +7,9 @@ import Search from "./components/search/Search";
 import useFetchData from "../../hooks/useFetchData";
 
 /**
- * Composant principal de la page d'accueil affichant la liste des recettes
+ * Composant principal de la page d'accueil - Container Component
+ * Gère toute la logique métier et les appels HTTP (GET, PATCH, DELETE)
+ * Transmet les données et callbacks aux composants de présentation
  * @returns {JSX.Element} Le composant HomePage
  */
 function HomePage() {
@@ -28,12 +30,13 @@ function HomePage() {
   );
 
   /**
-   * Fonction pour mettre à jour une recette spécifique dans la liste
-   * @param {Object} updatedRecipe - La recette mise à jour avec ses nouvelles données
+   * Gère la mise à jour d'une recette via API PATCH
+   * Envoie la requête HTTP et met à jour l'état local en cas de succès
+   * @param {Object} updatedRecipe - La recette avec les nouvelles données à envoyer à l'API
    */
   async function updateRecipe(updatedRecipe) {
     try {
-      // Envoie une requête PATCH pour inverser l'état "liked"
+      // Envoie une requête PATCH pour mettre à jour la recette sur le serveur
       const { _id, ...restRecipe } = updatedRecipe;
       const response = await fetch(`${BASE_URL_API}/${_id}`, {
         method: "PATCH",
@@ -59,8 +62,9 @@ function HomePage() {
   }
 
   /**
-   * Fonction pour supprimer des recettes spécifique dans la liste
-   *
+   * Gère la suppression d'une recette via API DELETE
+   * Envoie la requête HTTP et met à jour l'état local en cas de succès
+   * @param {string} _id - L'identifiant unique de la recette à supprimer
    */
   async function deleteRecipe(_id) {
     try {
@@ -104,7 +108,7 @@ function HomePage() {
             {recipes
               // Filtrage des recettes selon le critère de recherche (débute par le filtre tapé)
               .filter((r) => r.title.toLowerCase().startsWith(filter))
-              // Rendu de chaque recette dans le composant Recipe
+              // Rendu de chaque recette dans le composant de présentation Recipe
               .map((r) => (
                 <Recipe
                   key={r._id}
