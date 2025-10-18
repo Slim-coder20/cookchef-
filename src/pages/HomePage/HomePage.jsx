@@ -5,6 +5,7 @@ import Loading from "../../components/loading/Loading";
 import { ApiContext } from "../../context/ApiContext";
 import Search from "./components/search/Search";
 import useFetchRecipes from "../../hooks/useFetchRecipes";
+import { updateRecipe, deleteRecipe } from "../../api/Recipe";
 
 /**
  * Composant principal de la page d'accueil - Container Component
@@ -31,31 +32,11 @@ function HomePage() {
    * Envoie la requête HTTP et met à jour l'état local en cas de succès
    * @param {Object} updatedRecipe - La recette avec les nouvelles données à envoyer à l'API
    */
-  async function updateRecipe(updatedRecipe) {
-    try {
-      // Envoie une requête PATCH pour mettre à jour la recette sur le serveur
-      const { _id, ...restRecipe } = updatedRecipe;
-      const response = await fetch(`${BASE_URL_API}/${_id}`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(restRecipe),
-      });
-
-      // Si la requête s'est bien passée
-      if (response.ok) {
-        const updatedFromApi = await response.json();
-        // Met à jour l'état local
-        setRecipes(
-          recipes.map((r) =>
-            r._id === updatedFromApi._id ? updatedFromApi : r
-          )
-        );
-      }
-    } catch (e) {
-      console.log("Erreur");
-    }
+  async function handleUpdateRecipe(updatedRecipe) {
+    const savedRecipe = await updateRecipe(updatedRecipe);
+    setRecipes(
+      recipes.map((r) => (r._id === savedRecipe._id ? savedRecipe : r))
+    );
   }
 
   /**
@@ -63,21 +44,9 @@ function HomePage() {
    * Envoie la requête HTTP et met à jour l'état local en cas de succès
    * @param {string} _id - L'identifiant unique de la recette à supprimer
    */
-  async function deleteRecipe(_id) {
-    try {
-      // Envoie une requête DELETE pour supprimer la recette
-      const response = await fetch(`${BASE_URL_API}/${_id}`, {
-        method: "DELETE",
-      });
-
-      // Si la suppression s'est bien passée
-      if (response.ok) {
-        // Met à jour l'état local en supprimant la recette
-        setRecipes(recipes.filter((r) => r._id !== _id));
-      }
-    } catch (e) {
-      console.log("Erreur");
-    }
+  async function handleDeleteRecipe(_id) {
+    await deleteRecipe(_id);
+    setRecipes(recipes.filter((r) => r._id !== _id));
   }
 
   return (
@@ -110,8 +79,8 @@ function HomePage() {
                 <Recipe
                   key={r._id}
                   recipe={r}
-                  updatedRecipe={updateRecipe}
-                  deleteRecipe={deleteRecipe}
+                  updatedRecipe={handleUpdateRecipe}
+                  deleteRecipe={handleDeleteRecipe}
                 />
               ))}
           </div>
