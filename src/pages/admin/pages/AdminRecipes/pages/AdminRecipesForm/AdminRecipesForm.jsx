@@ -1,12 +1,12 @@
 import React from "react";
-import styles from "./Recipe.module.scss";
+import styles from "./AdminRecipesFrom.module.scss";
 import * as yup from "yup";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useContext } from "react";
-import { ApiContext } from "../../../../context/ApiContext";
+import { ApiContext } from "../../../../../../context/ApiContext";
 
-export default function RecipeForm() {
+export default function AdminRecipesForm() {
   const BASE_URL_API = useContext(ApiContext);
 
   const defaultValues = {
@@ -45,7 +45,7 @@ export default function RecipeForm() {
    */
   async function submit(values) {
     try {
-      clearErrors(); 
+      clearErrors();
       const response = await fetch(BASE_URL_API, {
         method: "POST",
         headers: {
