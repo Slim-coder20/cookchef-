@@ -56,11 +56,11 @@ export const ROUTER = createBrowserRouter([
                 path: "edit/:recipeId",
                 element: <AdminRecipesForm />,
               },
-              {
-                path: "users",
-                element: <AdminUsers />,
-              },
             ],
+          },
+          {
+            path: "users",
+            element: <AdminUsers />,
           },
           {
             index: true,

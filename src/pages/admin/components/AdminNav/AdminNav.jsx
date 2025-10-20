@@ -1,5 +1,12 @@
 import React from "react";
+import styles from "./AdminNav.module.scss";
+import { NavLink } from "react-router-dom";
 
 export default function AdminNav() {
-  return <h3>AdminNav</h3>;
+  return (
+    <ul className={`d-flex flex-column ${styles.list}`}>
+      <NavLink to="recipes">Recette</NavLink>
+      <NavLink to="users">Utilisateurs</NavLink>
+    </ul>
+  );
 }
